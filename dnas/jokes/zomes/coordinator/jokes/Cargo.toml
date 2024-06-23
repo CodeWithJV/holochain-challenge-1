@@ -1,0 +1,15 @@
+[package]
+name = "jokes"
+version = "0.0.1"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "jokes"
+
+[dependencies]
+hdk = { workspace = true }
+
+serde = { workspace = true }
+
+jokes_integrity = { workspace = true } 

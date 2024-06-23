@@ -1,0 +1,21 @@
+---
+manifest_version: "1"
+name: jokes
+integrity:
+  network_seed: ~
+  properties: ~
+  origin_time: 1714956707997150
+  zomes:
+    - name: jokes_integrity
+      hash: ~
+      bundled: "../../../target/wasm32-unknown-unknown/release/jokes_integrity.wasm"
+      dependencies: ~
+      dylib: ~
+coordinator:
+  zomes:
+    - name: jokes
+      hash: ~
+      bundled: "../../../target/wasm32-unknown-unknown/release/jokes.wasm"
+      dependencies:
+        - name: jokes_integrity
+      dylib: ~
