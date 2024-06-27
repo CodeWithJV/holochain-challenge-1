@@ -6,19 +6,19 @@
   import '@material/mwc-textfield'
 
   import { clientContext } from './contexts'
+import JokeDetail from './jokes/jokes/JokeDetail.svelte'
 
   import CreateJoke from './jokes/jokes/CreateJoke.svelte'
   import Banner from './Banner.svelte'
-
-  // Import the JokeDetail component here
-  // ...
 
   let client: AppClient | undefined
 
   let loading = true
 
   // Paste your variable and state declarations here
-  // ...
+  let jokeHash = ''
+  let retrieveJokeHash = ''
+  $: jokeHash
 
   onMount(async () => {
     // We pass an unused string as the url because it will dynamically be replaced in launcher environments
@@ -50,10 +50,33 @@
         <br />
         <br />
         <br />
-        <!-- Place your other code here -->
         <CreateJoke creator={client?.myPubKey} />
-        <br />
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- Place your other code here -->
+        <h3 style="margin-bottom: 16px; margin-top: 32px;">Retrieve A Joke!</h3>
+        <mwc-textfield
+            type="text"
+            placeholder="Enter the action hash of a joke..."
+            value={jokeHash}
+            on:input={(e) => {
+            jokeHash = e.currentTarget.value
+            }}
+            required
+            style="margin-bottom: 16px;"
+        />
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <mwc-button
+            raised
+            on:click={() => {
+            console.log(jokeHash)
+              retrieveJokeHash = undefined //force reload of joke detail component
+              retrieveJokeHash = jokeHash
+            }}
+        >
+            Get Joke
+        </mwc-button>
+        {#if retrieveJokeHash}
+            <JokeDetail jokeHash={decodeHashFromBase64(retrieveJokeHash)} />
+        {/if}
       </div>
     {/if}
   </div>
