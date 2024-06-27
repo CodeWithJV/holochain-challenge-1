@@ -15,7 +15,7 @@ There will be multiple operations that each agent can do on there jokes:
 
 #### 1. Fork this repo and clone it down
 
-#### 2. cd into `c-1` directory and run `nix develop`.
+#### 2. run `nix develop`.
 
 #### 3. run `npm i` to install packages
 
