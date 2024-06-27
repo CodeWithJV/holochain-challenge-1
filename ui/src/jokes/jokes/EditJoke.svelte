@@ -1,7 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher, getContext, onMount } from 'svelte'
-  import type { AppClient, Record, ActionHash } from '@holochain/client'
-  import { encodeHashToBase64 } from '@holochain/client'
+  import {
+    type AppClient,
+    type Record,
+    type EntryHash,
+    type AgentPubKey,
+    type DnaHash,
+    type ActionHash,
+    encodeHashToBase64,
+  } from '@holochain/client'
   import { decode } from '@msgpack/msgpack'
   import { clientContext } from '../../contexts'
   import type { Joke } from './types'
@@ -44,6 +51,34 @@
   async function updateJoke() {
     // Implement Joke update/edit logic here
     // ...
+    const joke: Joke = {
+      text: text!,
+      creator: currentJoke.creator,
+    }
+
+    try {
+      const updateRecord: Record = await client.callZome({
+        cap_secret: null,
+        role_name: 'jokes',
+        zome_name: 'jokes',
+        fn_name: 'update_joke',
+        payload: {
+          original_joke_hash: originalJokeHash,
+          previous_joke_hash: currentRecord.signed_action.hashed.hash,
+          updated_joke: joke,
+        },
+      })
+      console.log(
+        `HASH: ${encodeHashToBase64(updateRecord.signed_action.hashed.hash)}`
+      )
+
+      dispatch('joke-updated', {
+        actionHash: updateRecord.signed_action.hashed.hash,
+      })
+    } catch (e) {
+      errorSnackbar.labelText = `Error updating the joke: ${e.data}`
+      errorSnackbar.show()
+    }
   }
 </script>
 

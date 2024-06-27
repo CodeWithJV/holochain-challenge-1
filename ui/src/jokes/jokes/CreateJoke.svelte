@@ -3,8 +3,10 @@
   import {
     type AppClient,
     type Record,
+    type EntryHash,
     type AgentPubKey,
     type ActionHash,
+    type DnaHash,
     encodeHashToBase64,
   } from '@holochain/client'
   import { clientContext } from '../../contexts'
@@ -43,6 +45,7 @@
 
     try {
       // Create the Joke
+
       const record: Record = await client.callZome({
         cap_secret: null,
         role_name: 'jokes',
@@ -50,7 +53,6 @@
         fn_name: 'create_joke',
         payload: jokeEntry,
       })
-
       console.log(
         `HASH: ${encodeHashToBase64(record.signed_action.hashed.hash)}`
       )
@@ -80,7 +82,6 @@
     ></mwc-textarea>
   </div>
 
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
   <mwc-button
     raised
     label="Create Joke"

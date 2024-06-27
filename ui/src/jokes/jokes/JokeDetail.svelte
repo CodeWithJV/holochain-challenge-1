@@ -2,7 +2,14 @@
   import { createEventDispatcher, onMount, getContext } from 'svelte'
   import '@material/mwc-circular-progress'
   import { decode } from '@msgpack/msgpack'
-  import type { Record, ActionHash, AppClient } from '@holochain/client'
+  import type {
+    Record,
+    ActionHash,
+    AppClient,
+    EntryHash,
+    AgentPubKey,
+    DnaHash,
+  } from '@holochain/client'
   import { clientContext } from '../../contexts'
   import type { Joke } from './types'
   import '@material/mwc-circular-progress'
@@ -49,6 +56,7 @@
         fn_name: 'get_joke_by_hash',
         payload: jokeHash,
       })
+
       if (record) {
         joke = decode((record.entry as any).Present.entry) as Joke
       }
@@ -62,6 +70,20 @@
   async function deleteJoke() {
     // Implement Joke delete logic here
     // ...
+
+    try {
+      let delete_record = await client.callZome({
+        cap_secret: null,
+        role_name: 'jokes',
+        zome_name: 'jokes',
+        fn_name: 'delete_joke',
+        payload: jokeHash,
+      })
+    } catch (e) {
+      error = e
+    }
+
+    loading = false
   }
 </script>
 
