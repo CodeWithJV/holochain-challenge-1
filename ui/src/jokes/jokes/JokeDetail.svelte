@@ -3,9 +3,9 @@
   import '@material/mwc-circular-progress'
   import { decode } from '@msgpack/msgpack'
   import {
-    type AppClient,
     type Record,
     type ActionHash,
+    type AppClient,
     encodeHashToBase64,
   } from '@holochain/client'
   import { clientContext } from '../../contexts'
@@ -50,15 +50,33 @@
     loading = true
 
     try {
-      record = await client.callZome({
+      let details = await client.callZome({
         cap_secret: null,
         role_name: 'jokes',
         zome_name: 'jokes',
         fn_name: 'get_joke_by_hash',
         payload: jokeHash,
       })
-      if (record) {
-        joke = decode((record.entry as any).Present.entry) as Joke
+      if (details) {
+        if (details.type === 'Record') {
+          record = details.content.record
+          let entry_hash = record.signed_action.hashed.content.entry_hash
+          let entry_details = await client.callZome({
+            cap_secret: null,
+            role_name: 'jokes',
+            zome_name: 'jokes',
+            fn_name: 'get_joke_by_hash',
+            payload: entry_hash,
+          })
+          console.log('ACTION HASH:', encodeHashToBase64(jokeHash))
+          console.log('ENTRY HASH: ', encodeHashToBase64(entry_hash))
+          console.log('LIVENESS:', entry_details.content.entry_dht_status)
+          joke = decode((record.entry as any).Present.entry) as Joke
+        } else {
+          joke = undefined
+          console.log('entry found')
+          console.log(details)
+        }
       }
     } catch (e) {
       error = e
@@ -68,8 +86,23 @@
   }
 
   async function deleteJoke() {
-    // Implement Joke delete logic here
-    // ...
+    try {
+      // Delete a Joke
+      const hash: ActionHash = await client.callZome({
+        cap_secret: null,
+        role_name: 'jokes',
+        zome_name: 'jokes',
+        fn_name: 'delete_joke',
+        payload: jokeHash,
+      })
+
+      console.log(`HASH: ${encodeHashToBase64(hash)}`)
+      dispatch('joke-deleted', { jokeHash: record.signed_action.hashed.hash })
+    } catch (e) {
+      console.error(`Error deleting the joke: ${e}`)
+      errorSnackbar.labelText = `Error deleting the joke: ${e}`
+      errorSnackbar.show()
+    }
   }
 </script>
 
@@ -97,9 +130,10 @@
     }}
   ></EditJoke>
 {:else}
-  <div style="display: flex; flex-direction: column">
+  <div
+    style="display: flex; flex-direction: row-reverse; justify-content: space-between;"
+  >
     <div style="display: flex; flex-direction: row">
-      <span style="flex: 1"></span>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <mwc-icon-button
         style="margin-left: 8px"
@@ -116,7 +150,7 @@
       ></mwc-icon-button>
     </div>
 
-    <div style="display: flex; flex-direction: row; margin-bottom: 16px">
+    <div style="display: flex; align-items: center;">
       <span style="margin-right: 4px"><strong>Text:</strong></span>
       <span style="white-space: pre-line">{joke?.text}</span>
     </div>
