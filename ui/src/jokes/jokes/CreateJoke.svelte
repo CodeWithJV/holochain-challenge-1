@@ -66,8 +66,8 @@
 
 <mwc-snackbar bind:this={errorSnackbar} leading> </mwc-snackbar>
 <div style="display: flex; flex-direction: column">
-  <span style="font-size: 18px">Create Joke</span>
-
+  <h3>Create A Joke!</h3>
+  <br />
   <div style="margin-bottom: 16px">
     <mwc-textarea
       outlined
@@ -77,12 +77,13 @@
         text = e.target.value
       }}
       required
+      style="width: 100%"
     ></mwc-textarea>
   </div>
 
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <mwc-button
-    raised
+    outlined
     label="Create Joke"
     disabled={!isJokeValid}
     on:click={() => createJoke()}

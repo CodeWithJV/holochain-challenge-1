@@ -74,6 +74,7 @@
     <mwc-circular-progress indeterminate></mwc-circular-progress>
   </div>
 {:else if error}
+  <br />
   <span>Error fetching the joke: {error.data}</span>
 {:else if editing}
   <EditJoke

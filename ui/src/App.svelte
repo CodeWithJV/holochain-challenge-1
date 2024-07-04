@@ -3,6 +3,7 @@
   import type { ActionHash, AppClient } from '@holochain/client'
   import { AppWebsocket, decodeHashFromBase64 } from '@holochain/client'
   import '@material/mwc-circular-progress'
+  import '@material/mwc-textfield'
 
   import { clientContext } from './contexts'
 
@@ -45,17 +46,29 @@
   {/if}
 </main>
 
-<style>
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
-</style>
+        <mwc-textfield
+          type="text"
+          placeholder="Enter the action hash of a joke..."
+          value={jokeHash}
+          on:input={(e) => {
+            jokeHash = e.currentTarget.value
+          }}
+          required
+        />
+        <br />
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <mwc-button
+          raised
+          on:click={() => {
+            showJoke = true
+          }}
+        >
+          Get Joke
+        </mwc-button>
+        {#if showJoke}
+          <JokeDetail jokeHash={decodeHashFromBase64(jokeHash)} />
+        {/if}
+      </div>
+    {/if}
+  </div>
+</Banner>
