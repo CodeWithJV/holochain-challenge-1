@@ -57,7 +57,7 @@
         <br />
         <br />
         <br />
-        <h3>Edit A Joke!</h3>
+        <h3>Retrieve A Joke!</h3>
 
         <mwc-textfield
           type="text"
