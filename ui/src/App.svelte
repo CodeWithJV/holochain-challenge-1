@@ -3,6 +3,7 @@
   import type { ActionHash, AppClient } from '@holochain/client'
   import { AppWebsocket, decodeHashFromBase64 } from '@holochain/client'
   import '@material/mwc-circular-progress'
+  import '@material/mwc-textfield'
 
   import { clientContext } from './contexts'
 
@@ -11,6 +12,7 @@
   // Import the JokeDetail component here
   // ...
   import JokeDetail from './jokes/jokes/JokeDetail.svelte'
+  import Banner from './Banner.svelte'
 
   let client: AppClient | undefined
 
@@ -35,51 +37,51 @@
   })
 </script>
 
-<main>
-  {#if loading}
-    <div
-      style="display: flex; flex: 1; align-items: center; justify-content: center"
-    >
-      <mwc-circular-progress indeterminate />
-    </div>
-  {:else}
-    <div id="content" style="display: flex; flex-direction: column; flex: 1;">
-      <CreateJoke creator={client?.myPubKey} />
-      <!-- Place your other code here -->
-      <input
-        type="text"
-        placeholder="Enter the action hash of a joke..."
-        value={jokeHash}
-        on:input={(e) => {
-          jokeHash = e.currentTarget.value
-        }}
-        required
-      />
-      <button
-        on:click={() => {
-          showJoke = true
-        }}
+<Banner challengeName={'Entries and Actions'} challengeNumber={1}>
+  <div
+    style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; margin-left: auto; margin-right: auto; max-width: 600px;"
+  >
+    {#if loading}
+      <div
+        style="display: flex; flex: 1; align-items: center; justify-content: center"
       >
-        Get Joke
-      </button>
-      {#if showJoke}
-        <JokeDetail jokeHash={decodeHashFromBase64(jokeHash)} />
-      {/if}
-    </div>
-  {/if}
-</main>
+        <mwc-circular-progress indeterminate />
+      </div>
+    {:else}
+      <div
+        id="content"
+        style="display: flex; flex-direction: column; flex: 1; margin-bottom: 15%;"
+      >
+        <CreateJoke creator={client?.myPubKey} />
+        <!-- Place your other code here -->
+        <br />
+        <br />
+        <br />
+        <h3>Edit A Joke!</h3>
 
-<style>
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
-</style>
+        <mwc-textfield
+          type="text"
+          placeholder="Enter the action hash of a joke..."
+          value={jokeHash}
+          on:input={(e) => {
+            jokeHash = e.currentTarget.value
+          }}
+          required
+        />
+        <br />
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <mwc-button
+          raised
+          on:click={() => {
+            showJoke = true
+          }}
+        >
+          Get Joke
+        </mwc-button>
+        {#if showJoke}
+          <JokeDetail jokeHash={decodeHashFromBase64(jokeHash)} />
+        {/if}
+      </div>
+    {/if}
+  </div>
+</Banner>
