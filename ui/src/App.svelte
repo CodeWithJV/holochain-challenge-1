@@ -31,20 +31,27 @@
   })
 </script>
 
-<main>
-  {#if loading}
-    <div
-      style="display: flex; flex: 1; align-items: center; justify-content: center"
-    >
-      <mwc-circular-progress indeterminate />
-    </div>
-  {:else}
-    <div id="content" style="display: flex; flex-direction: column; flex: 1;">
-      <CreateJoke creator={client?.myPubKey} />
-      <!-- Place your other code here -->
-    </div>
-  {/if}
-</main>
+<Banner challengeName={'Entries and Actions'} challengeNumber={1}>
+  <div
+    style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; margin-left: auto; margin-right: auto; max-width: 600px;"
+  >
+    {#if loading}
+      <div
+        style="display: flex; flex: 1; align-items: center; justify-content: center"
+      >
+        <mwc-circular-progress indeterminate />
+      </div>
+    {:else}
+      <div
+        id="content"
+        style="display: flex; flex-direction: column; flex: 1; margin-bottom: 15%;"
+      >
+        <br />
+        <br />
+        <br />
+        <h3>Retrieve A Joke!</h3>
+        <!-- Place your other code here -->
+        <CreateJoke creator={client?.myPubKey} />
 
         <mwc-textfield
           type="text"
