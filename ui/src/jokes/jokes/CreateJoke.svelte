@@ -57,8 +57,8 @@
 
       dispatch('joke-created', { jokeHash: record.signed_action.hashed.hash })
     } catch (e) {
-      console.error(`Error creating the joke: ${e.data}`)
-      errorSnackbar.labelText = `Error creating the joke: ${e.data}`
+      console.error(`Error creating the joke: ${e}`)
+      errorSnackbar.labelText = `Error creating the joke: ${e}`
       errorSnackbar.show()
     }
   }

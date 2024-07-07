@@ -93,12 +93,12 @@ $: jokeHash
 #### 2. Next we can create our text field element. Paste this code just below where the `CreateJoke` component is implemented, inside the `<main>` block
 
 ```svelte
-<input
+<mwc-textfield
     type="text"
     placeholder="Enter the action hash of a joke..."
     value={jokeHash}
     on:input={(e) => {
-        jokeHash = e.currentTarget.value
+    jokeHash = e.currentTarget.value
     }}
     required
 />
@@ -124,13 +124,14 @@ $: showJoke
 #### 5. Next we can add our button and UI component to render the retrieved joke. Place this block of code underneath the text-input we added before
 
 ```svelte
-<button
+<mwc-button
+    raised
     on:click={() => {
     showJoke = true
     }}
 >
     Get Joke
-</button>
+</mwc-button>
 {#if showJoke}
     <JokeDetail jokeHash={decodeHashFromBase64(jokeHash)} />
 {/if}
@@ -204,7 +205,7 @@ try {
     actionHash: updateRecord.signed_action.hashed.hash,
   })
 } catch (e) {
-  errorSnackbar.labelText = `Error updating the joke: ${e.data}`
+  errorSnackbar.labelText = `Error updating the joke: ${e}`
   errorSnackbar.show()
 }
 ```

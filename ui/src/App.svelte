@@ -8,6 +8,7 @@
   import { clientContext } from './contexts'
 
   import CreateJoke from './jokes/jokes/CreateJoke.svelte'
+  import Banner from './Banner.svelte'
 
   // Import the JokeDetail component here
   // ...
@@ -49,32 +50,10 @@
         <br />
         <br />
         <br />
-        <h3>Retrieve A Joke!</h3>
         <!-- Place your other code here -->
         <CreateJoke creator={client?.myPubKey} />
-
-        <mwc-textfield
-          type="text"
-          placeholder="Enter the action hash of a joke..."
-          value={jokeHash}
-          on:input={(e) => {
-            jokeHash = e.currentTarget.value
-          }}
-          required
-        />
         <br />
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <mwc-button
-          raised
-          on:click={() => {
-            showJoke = true
-          }}
-        >
-          Get Joke
-        </mwc-button>
-        {#if showJoke}
-          <JokeDetail jokeHash={decodeHashFromBase64(jokeHash)} />
-        {/if}
       </div>
     {/if}
   </div>
