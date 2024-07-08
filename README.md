@@ -253,7 +253,7 @@ This applies to delete actions as well, and it means that any entries once added
 
 #### 10. In each agent window, try retrieve both the original create action and the new update action
 
-You will notice the updated entry contains the latest text you inputted, and the data inside the entry of the original create action is still accessible.
+You will notice the updated entry contains the latest text you inputted, and when you retrieve the hash of the original create action, it is still accessible.
 
 ## Delete a joke
 
@@ -284,11 +284,9 @@ pub fn delete_joke(original_joke_hash: ActionHash) -> ExternResult<ActionHash> {
 
 #### 4. Create a joke, retrieve it, and then delete it using the delete button.
 
-Just like with editing and creating a joke, deleting a joke adds another action the the Agents source chain.
+Just like with editing and creating a joke, deleting a joke should add another action the the Agents source chain, however this action won't be associated with an entry.
 
-On the agent window, there won't be any visual indicator that you've deleted the entry, and you will still be able to retrieve the original create action.
-
-Just like with update actions, delete actions don't actually delete entries/actions from the DHT. They just mark them as outdated. However, when retrieving an old action for which the entry previously existed, it remains accessible.
+Also like update actions, delete actions don't achually remove the previous actions/entries of this piece of data from the DHT. They just mark them as outdated. You can still access the initial entries. 
 
 You may be thinking, "What's the point of a delete action if I can still access the old entry?" - More on this in a future challenge!
 
