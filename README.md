@@ -23,7 +23,7 @@ There will be multiple operations that each agent can do on there jokes:
 
 #### 5. On one the agents windows, enter some text into the text field and click the create joke button.
 
-You will notice the error popup: `Error creating the joke: undefined`
+You will notice the error popup: `Attempted to call a zome function that doesn't exist: Zome: jokes Fn create_joke`
 
 <details>
 <summary>
@@ -31,7 +31,7 @@ Tip!
 </summary>
 
 If you see the error
-`sh: 1: hc: Permission denied` it means you forgot to run `nix develop`!
+`sh: 1: hc: Permission denied` in your terminal, it means you forgot to run `nix develop`!
 
 </details>
 
@@ -45,6 +45,8 @@ Hint
 Press `F12` or `right click > inspect element` to open up the dev tools. Select `console` you should then see the error.
 
 The error inside the console should point us to our [CreateJoke.svelte](ui/src/jokes/jokes/CreateJoke.svelte) file
+
+</details>
 
 #### 6. navigate to `dnas/jokes/zomes/coordinator/jokes/src/joke.rs` and paste the following code at the top of the file, underneath the `use` statements
 
@@ -93,6 +95,7 @@ $: jokeHash
 #### 2. Next we can create our text field element. Paste this code just below where the `CreateJoke` component is implemented, inside the `<main>` block
 
 ```svelte
+<h3 style="margin-bottom: 16px; margin-top: 32px;">Retrieve A Joke!</h3>
 <mwc-textfield
     type="text"
     placeholder="Enter the action hash of a joke..."
@@ -101,6 +104,7 @@ $: jokeHash
     jokeHash = e.currentTarget.value
     }}
     required
+    style="margin-bottom: 16px;"
 />
 ```
 
@@ -124,6 +128,7 @@ $: showJoke
 #### 5. Next we can add our button and UI component to render the retrieved joke. Place this block of code underneath the text-input we added before
 
 ```svelte
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <mwc-button
     raised
     on:click={() => {
