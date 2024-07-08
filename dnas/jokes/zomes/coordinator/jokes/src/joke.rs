@@ -23,6 +23,7 @@ pub fn get_joke_by_hash(original_joke_hash: ActionHash) -> ExternResult<Option<R
         }
     }
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpdateJokeInput {
     pub original_joke_hash: ActionHash,

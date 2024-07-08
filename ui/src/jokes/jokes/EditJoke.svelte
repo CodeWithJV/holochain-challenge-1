@@ -76,7 +76,7 @@
         actionHash: updateRecord.signed_action.hashed.hash,
       })
     } catch (e) {
-      errorSnackbar.labelText = `Error updating the joke: ${e.data}`
+      errorSnackbar.labelText = `Error updating the joke: ${e}`
       errorSnackbar.show()
     }
   }
@@ -99,12 +99,14 @@
   </div>
 
   <div style="display: flex; flex-direction: row">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <mwc-button
       outlined
       label="Cancel"
       on:click={() => dispatch('edit-canceled')}
       style="flex: 1; margin-right: 16px"
     ></mwc-button>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <mwc-button
       raised
       label="Save"

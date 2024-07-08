@@ -2,13 +2,11 @@
   import { createEventDispatcher, onMount, getContext } from 'svelte'
   import '@material/mwc-circular-progress'
   import { decode } from '@msgpack/msgpack'
-  import type {
-    Record,
-    ActionHash,
-    AppClient,
-    EntryHash,
-    AgentPubKey,
-    DnaHash,
+  import {
+    type Record,
+    type ActionHash,
+    type AppClient,
+    encodeHashToBase64,
   } from '@holochain/client'
   import { clientContext } from '../../contexts'
   import type { Joke } from './types'
@@ -70,20 +68,24 @@
   async function deleteJoke() {
     // Implement Joke delete logic here
     // ...
-
     try {
-      let delete_record = await client.callZome({
+      // Delete a Joke
+      const hash: ActionHash = await client.callZome({
         cap_secret: null,
         role_name: 'jokes',
         zome_name: 'jokes',
         fn_name: 'delete_joke',
         payload: jokeHash,
       })
-    } catch (e) {
-      error = e
-    }
 
-    loading = false
+      console.log(`HASH: ${encodeHashToBase64(hash)}`)
+
+      dispatch('joke-deleted', { jokeHash: record.signed_action.hashed.hash })
+    } catch (e) {
+      console.error(`Error deleting the joke: ${e}`)
+      errorSnackbar.labelText = `Error deleting the joke: ${e}`
+      errorSnackbar.show()
+    }
   }
 </script>
 
@@ -97,7 +99,7 @@
   </div>
 {:else if error}
   <br />
-  <span>Error fetching the joke: {error.data}</span>
+  <span>Error fetching the joke: {error}</span>
 {:else if editing}
   <EditJoke
     originalJokeHash={jokeHash}
@@ -111,9 +113,10 @@
     }}
   ></EditJoke>
 {:else}
-  <div style="display: flex; flex-direction: column">
+  <div
+    style="display: flex; flex-direction: row-reverse; justify-content: space-between;"
+  >
     <div style="display: flex; flex-direction: row">
-      <span style="flex: 1"></span>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <mwc-icon-button
         style="margin-left: 8px"
@@ -130,7 +133,7 @@
       ></mwc-icon-button>
     </div>
 
-    <div style="display: flex; flex-direction: row; margin-bottom: 16px">
+    <div style="display: flex; align-items: center;">
       <span style="margin-right: 4px"><strong>Text:</strong></span>
       <span style="white-space: pre-line">{joke?.text}</span>
     </div>
