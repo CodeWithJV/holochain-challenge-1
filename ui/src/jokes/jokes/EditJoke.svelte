@@ -44,6 +44,34 @@
   async function updateJoke() {
     // Implement Joke update/edit logic here
     // ...
+    const joke: Joke = {
+      text: text!,
+      creator: currentJoke.creator,
+    }
+
+    try {
+      const updateRecord: Record = await client.callZome({
+        cap_secret: null,
+        role_name: 'jokes',
+        zome_name: 'jokes',
+        fn_name: 'update_joke',
+        payload: {
+          original_joke_hash: originalJokeHash,
+          previous_joke_hash: currentRecord.signed_action.hashed.hash,
+          updated_joke: joke,
+        },
+      })
+      console.log(
+        `HASH: ${encodeHashToBase64(updateRecord.signed_action.hashed.hash)}`
+      )
+
+      dispatch('joke-updated', {
+        actionHash: updateRecord.signed_action.hashed.hash,
+      })
+    } catch (e) {
+      errorSnackbar.labelText = `Error updating the joke: ${e}`
+      errorSnackbar.show()
+    }
   }
 </script>
 
@@ -64,12 +92,14 @@
   </div>
 
   <div style="display: flex; flex-direction: row">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <mwc-button
       outlined
       label="Cancel"
       on:click={() => dispatch('edit-canceled')}
       style="flex: 1; margin-right: 16px"
     ></mwc-button>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <mwc-button
       raised
       label="Save"
