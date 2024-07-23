@@ -78,7 +78,7 @@
   </div>
 {:else if error}
   <br />
-  <span>Error fetching the joke: {error.data}</span>
+  <span>Error fetching the joke: {error}</span>
 {:else if editing}
   <EditJoke
     originalJokeHash={jokeHash}
