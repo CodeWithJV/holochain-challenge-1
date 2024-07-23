@@ -73,6 +73,10 @@ Press `Ctrl + C` in your terminal to stop the holochain process, and `npm start`
 
 </details>
 
+Have a look through `CreateJoke.svelte` and see how the `createJoke` function is implemented. 
+
+Given we can get the author of an entry through the create action, why might we want to store the creator field int he entry as well?
+
 #### 5. Select each DHT cell inside the dht-cell panel.
 
 You will notice that the source chain of each cell is different. The cell of the Agent who created the joke, contains an **entry** and its corresponding **create action**, and the other cell will not have this.
@@ -119,13 +123,6 @@ Place these lines of code inside the same `script` tag of `App.svelte`
 import JokeDetail from './jokes/jokes/JokeDetail.svelte'
 ```
 
-```ts
-let showJoke = false
-$: showJoke
-```
-
-#### 5. Next we can add our button and UI component to render the retrieved joke. Place this block of code underneath the text-input we added before
-
 ```svelte
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <mwc-button
@@ -142,7 +139,7 @@ $: showJoke
 {/if}
 ```
 
-#### 7. Navigate back to `dnas/jokes/zomes/coordinator/jokes/src/joke.rs` and paste the following code underneath our `create_joke` function
+#### 5. Navigate back to `dnas/jokes/zomes/coordinator/jokes/src/joke.rs` and paste the following code underneath our `create_joke` function
 
 ```rust
 #[hdk_extern]
@@ -162,9 +159,9 @@ pub fn get_joke_by_hash(original_joke_hash: ActionHash) -> ExternResult<Option<R
 
 This zome function is called by the `JokeDetail` component when it mounts. It takes in the action hash for the joke as an argument, and then returns the record corresponding to it.
 
-#### 8. Save the file, restart the holochain app and create a new joke inside an Agent's window.
+#### 6. Save the file, restart the holochain app and create a new joke inside an Agent's window.
 
-#### 9. Inside that same agents window, open up the console, copy the hash of the action just created, paste it into the other Agents Get Joke text field, and press the **Get Joke** button.
+Inside that same agents window, open up the console, copy the hash of the action just created, paste it into the other Agents Get Joke text field, and press the **Get Joke** button.
 
 You should see your newely created joke render on the UI!
 
@@ -180,7 +177,7 @@ You will notice nothing will happen. Once again, we will need to implement some 
 
 #### 3. Navigate to `ui/src/jokes/jokes/EditJoke.svelte`
 
-This `EditJoke` component holds the code for the UI where we can edit jokes. It is already implemented inside the `JokeDetail` component.
+This `EditJoke` component holds the code for the UI where we can edit jokes. It is already included inside the `JokeDetail` component.
 
 #### 4. Find the `updateJoke` function and paste the following code inside of it.
 
@@ -203,7 +200,7 @@ try {
     },
   })
   console.log(
-    `HASH: ${encodeHashToBase64(updateRecord.signed_action.hashed.hash)}`
+    `NEW ACTION HASH: ${encodeHashToBase64(updateRecord.signed_action.hashed.hash)}`
   )
 
   dispatch('joke-updated', {
@@ -245,13 +242,13 @@ Notice how this block of code contains a struct as well as the Zome function. Fo
 
 #### 8. Look at the source chain for the cell we just edited a joke for. You will see another action has been added.
 
-It's important to understand how updates in Holochain work. When you commit an update action, it will not update the contents of the entry. Instead it will add another entry to to the DHT, and link it to the previous entry via the update action.
+It's important to understand how updates in Holochain work. When you commit an update action, it will not update the contents of the entry. Instead it will add new entry to to the DHT, and link it to the previous entry via the update action.
 
 This applies to delete actions as well, and it means that any entries once added to the DHT will remain on it forever.
 
-#### 9. In each agent window, try retrieve both the original create action and the new update action
+Try putting a console.log in the `fetchJoke` function of `EditDetail.svelte` to see what the `record` looks like when you retrieve multiple action hashes.
 
-You will notice the updated entry contains the latest text you entered, and when you retrieve the hash of the original create action, it is still accessible.
+What do you think will happen if you edit two separate entries to have the same content?
 
 ## Delete a joke
 
@@ -286,6 +283,8 @@ Just like with editing and creating a joke, deleting a joke should add another a
 
 Also like update actions, delete actions don't achually remove the previous actions/entries of this piece of data from the DHT. They just change the `entry_dht_status` to Dead. You can still access the initial data. 
 
+What does the delete_joke function return?
+
 #### 5. Update your get_joke_by_hash function to work for both action and entry hashes
 ```rust
 pub fn get_joke_by_hash(original_joke_hash: AnyDhtHash) -> ExternResult<Option<Details>> {
@@ -303,8 +302,7 @@ pub fn get_joke_by_hash(original_joke_hash: AnyDhtHash) -> ExternResult<Option<D
 }
 
 ```
-Notice how get_details can work with both an action hash and an entry hash.
-
+Have a look at the differences between the two versions of the function and make a note of anything you want to explore further.
 
 #### 6. Update the fetchJoke function to get the full entry details
 
