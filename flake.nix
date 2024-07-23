@@ -9,7 +9,9 @@
 
     nixpkgs.follows = "holochain-flake/nixpkgs";
     flake-parts.follows = "holochain-flake/flake-parts";
-    
+
+    holochain-flake.inputs.lair.url = "github:holochain/lair/lair_keystore-v0.4.5";
+
   };
 
   outputs = inputs:
@@ -30,7 +32,6 @@
               inputsFrom = [ inputs'.holochain-flake.devShells.holonix ];
               packages = [
                 pkgs.nodejs_20
-                
                 # more packages go here
               ];
             };
