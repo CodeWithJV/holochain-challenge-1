@@ -52,10 +52,11 @@
       })
 
       console.log(
-        `HASH: ${encodeHashToBase64(record.signed_action.hashed.hash)}`
+        `ACTION HASH: ${encodeHashToBase64(record.signed_action.hashed.hash)}`
       )
 
       dispatch('joke-created', { jokeHash: record.signed_action.hashed.hash })
+      text = ''
     } catch (e) {
       console.error(`Error creating the joke: ${e}`)
       errorSnackbar.labelText = `Error creating the joke: ${e}`
