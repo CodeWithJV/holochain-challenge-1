@@ -29,13 +29,16 @@
 
   $: editing, error, loading, record, joke
 
+  $: if (jokeHash) {
+    fetchJoke();
+  }
+
   onMount(async () => {
     if (jokeHash === undefined) {
       throw new Error(
         `The jokeHash input is required for the JokeDetail element`
       )
     }
-    await fetchJoke()
   })
 
   async function fetchJoke() {
