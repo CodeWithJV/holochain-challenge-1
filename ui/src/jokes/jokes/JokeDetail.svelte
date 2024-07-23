@@ -2,7 +2,12 @@
   import { createEventDispatcher, onMount, getContext } from 'svelte'
   import '@material/mwc-circular-progress'
   import { decode } from '@msgpack/msgpack'
-  import type { Record, ActionHash, AppClient } from '@holochain/client'
+  import {
+    type AppClient,
+    type Record,
+    type ActionHash,
+    encodeHashToBase64,
+  } from '@holochain/client'
   import { clientContext } from '../../contexts'
   import type { Joke } from './types'
   import '@material/mwc-circular-progress'
