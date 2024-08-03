@@ -59,6 +59,8 @@ pub fn create_joke(joke: Joke) -> ExternResult<Record> {
 }
 
 ```
+[hdk::entry::create_entry](https://docs.rs/hdk/latest/hdk/entry/fn.create_entry.html)
+[hdk::entry::get](https://docs.rs/hdk/latest/hdk/entry/fn.get.html)
 
 ### 4. Save the file, restart the holochain application and create another joke.
 
@@ -159,6 +161,8 @@ pub fn get_joke_by_hash(original_joke_hash: ActionHash) -> ExternResult<Option<R
 
 This zome function is called by the `JokeDetail` component when it mounts. It takes in the action hash for the joke as an argument, and then returns the record corresponding to it.
 
+[hdk::entry::get_details](https://docs.rs/hdk/latest/hdk/entry/fn.get_details.html)
+
 #### 6. Save the file, restart the holochain app and create a new joke inside an Agent's window.
 
 Inside that same agents window, open up the console, copy the hash of the action just created, paste it into the other Agents Get Joke text field, and press the **Get Joke** button.
@@ -236,6 +240,8 @@ pub fn update_joke(input: UpdateJokeInput) -> ExternResult<Record> {
 
 Notice how this block of code contains a struct as well as the Zome function. For this update function, we want to send multiple bits of data from the client, but Zome functions can only a take a single parameter. Using a struct type allows us to circumvent this.
 
+[hdk::entry_update_entry](https://docs.rs/hdk/latest/hdk/entry/fn.update_entry.html)
+
 #### 6. Save the file, and restart the app.
 
 #### 7. Create a joke, retrieve it, edit its contents, and press `save`.
@@ -274,6 +280,8 @@ pub fn delete_joke(original_joke_hash: ActionHash) -> ExternResult<ActionHash> {
 ```
 
 </details>
+
+[hdk::entry::delete_entry](https://docs.rs/hdk/latest/hdk/entry/fn.delete_entry.html)
 
 #### 3. Save the file and restart the app
 
