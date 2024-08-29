@@ -2,7 +2,7 @@
   description = "Template for Holochain app development";
 
   inputs = {
-    versions.url  = "github:holochain/holochain?dir=versions/0_3_rc";
+    versions.url  = "github:holochain/holochain?dir=versions/0_3";
 
     holochain-flake.url = "github:holochain/holochain";
     holochain-flake.inputs.versions.follows = "versions";
@@ -10,7 +10,7 @@
     nixpkgs.follows = "holochain-flake/nixpkgs";
     flake-parts.follows = "holochain-flake/flake-parts";
 
-    holochain-flake.inputs.lair.url = "github:holochain/lair/lair_keystore-v0.4.5";
+    #holochain-flake.inputs.lair.url = "github:holochain/lair/lair_keystore-v0.4.5";
 
   };
 
