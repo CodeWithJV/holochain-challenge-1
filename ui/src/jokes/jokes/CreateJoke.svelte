@@ -39,6 +39,7 @@ async function createJoke() {
     console.log(record)
     dispatch("joke-created", { jokeHash: record.signed_action.hashed.hash });
   } catch (e) {
+    console.error(e)
     alert((e as HolochainError).message);
   }
 }

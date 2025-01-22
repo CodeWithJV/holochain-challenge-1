@@ -62,31 +62,8 @@ setContext<ClientContext>(clientContext, appClientContext);
         id="content"
         style="display: flex; flex-direction: column; flex: 1; margin-bottom: 15%;"
       >
-        <!-- Place your other code here -->
         <CreateJoke creator={client?.myPubKey} />
-<h3 style="margin-bottom: 16px; margin-top: 32px;">Retrieve A Joke!</h3>
-<input
-    type="text"
-    placeholder="Enter the action hash of a joke..."
-    value={jokeHash}
-    on:input={(e) => {
-    jokeHash = e.currentTarget.value
-    }}
-    required
-    style="margin-bottom: 16px;"
-/>
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<button
-    on:click={() => {
-      retrieveJokeHash = undefined //force reload of joke detail component
-      retrieveJokeHash = jokeHash
-    }}
->
-    Get Joke
-</button>
-{#if retrieveJokeHash}
-    <JokeDetail jokeHash={decodeHashFromBase64(retrieveJokeHash)} />
-{/if}
+        <!-- Place your other code here -->
         <!-- svelte-ignore a11y-click-events-have-key-events -->
       </div>
     {/if}
