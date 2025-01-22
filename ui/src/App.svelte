@@ -11,7 +11,6 @@ import Banner from './Banner.svelte'
 
 // Import the JokeDetail component here
 // ...
-import JokeDetail from './jokes/jokes/JokeDetail.svelte'
 
 let client: AppClient | undefined;
 let error: HolochainError | undefined;
@@ -19,9 +18,6 @@ let loading = false;
 
 // Paste your variable and state declarations here
 // ...
-let jokeHash = ''
-let retrieveJokeHash = ''
-$: jokeHash
 
 const appClientContext = {
   getClient: async () => {
