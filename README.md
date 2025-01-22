@@ -46,6 +46,11 @@ The error inside the console should point us to our [CreateJoke.svelte](ui/src/j
 
 </details>
 
+Have a look at the createJoke function in [CreateJoke.svelte](ui/src/jokes/jokes/CreateJoke.svelte) file. This uses the holochain javascript function callZome which is the main way our front end communicates with the holochain conductor.
+
+[client.callZome](https://github.com/holochain/holochain-client-js/blob/main/docs/client.appwebsocket.callzome.md)
+[client.callZomeRequestGeneric](https://github.com/holochain/holochain-client-js/blob/main/docs/client.callzomerequestgeneric.md)
+
 ### 3. Navigate to `dnas/jokes/zomes/coordinator/jokes/src/joke.rs` and paste the following code at the top of the file, underneath the `use` statements
 
 ```rust
