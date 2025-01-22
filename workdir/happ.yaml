@@ -1,18 +1,18 @@
----
-manifest_version: "1"
-name: demo
-description: ~
+manifest_version: '1'
+name: actions_and_entries
+description: null
 roles:
-  - name: jokes
-    provisioning:
-      strategy: create
-      deferred: false
-    dna:
-      bundled: "../dnas/jokes/workdir/jokes.dna"
-      modifiers:
-        network_seed: ~
-        properties: ~
-        origin_time: ~
-        quantum_time: ~
-      installed_hash: ~
-      clone_limit: 0
+- name: jokes
+  provisioning:
+    strategy: create
+    deferred: false
+  dna:
+    bundled: '../dnas/jokes/workdir/jokes.dna'
+    modifiers:
+      network_seed: null
+      properties: null
+      origin_time: null
+      quantum_time: null
+    installed_hash: null
+    clone_limit: 0
+allow_deferred_memproofs: false

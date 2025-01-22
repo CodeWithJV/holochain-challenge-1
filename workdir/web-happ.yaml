@@ -1,7 +1,6 @@
----
-manifest_version: "1"
-name: demo
+manifest_version: '1'
+name: actions_and_entries
 ui:
-  bundled: "../ui/dist.zip"
+  bundled: '../ui/dist.zip'
 happ_manifest:
-  bundled: "./demo.happ"
+  bundled: './actions_and_entries.happ'

@@ -52,9 +52,9 @@ The error inside the console should point us to our [CreateJoke.svelte](ui/src/j
 #[hdk_extern]
 pub fn create_joke(joke: Joke) -> ExternResult<Record> {
     let joke_hash = create_entry(&EntryTypes::Joke(joke.clone()))?;
-    let record = get(joke_hash.clone(), GetOptions::default())?.ok_or(
-        wasm_error!(WasmErrorInner::Guest(String::from("Could not find the newly created Joke")))
-    )?;
+    let record = get(joke_hash.clone(), GetOptions::default())?.ok_or(wasm_error!(
+        WasmErrorInner::Guest("Could not find the newly created Joke".to_string())
+    ))?;
     Ok(record)
 }
 
@@ -101,7 +101,7 @@ $: jokeHash
 
 ```svelte
 <h3 style="margin-bottom: 16px; margin-top: 32px;">Retrieve A Joke!</h3>
-<mwc-textfield
+<input
     type="text"
     placeholder="Enter the action hash of a joke..."
     value={jokeHash}
@@ -127,15 +127,14 @@ import JokeDetail from './jokes/jokes/JokeDetail.svelte'
 
 ```svelte
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<mwc-button
-    raised
+<button
     on:click={() => {
       retrieveJokeHash = undefined //force reload of joke detail component
       retrieveJokeHash = jokeHash
     }}
 >
     Get Joke
-</mwc-button>
+</button>
 {#if retrieveJokeHash}
     <JokeDetail jokeHash={decodeHashFromBase64(retrieveJokeHash)} />
 {/if}
@@ -189,30 +188,28 @@ This `EditJoke` component holds the code for the UI where we can edit jokes. It 
 const joke: Joke = {
   text: text!,
   creator: currentJoke.creator,
-}
+};
 
 try {
   const updateRecord: Record = await client.callZome({
     cap_secret: null,
-    role_name: 'jokes',
-    zome_name: 'jokes',
-    fn_name: 'update_joke',
+    role_name: "jokes",
+    zome_name: "jokes",
+    fn_name: "update_joke",
     payload: {
       original_joke_hash: originalJokeHash,
       previous_joke_hash: currentRecord.signed_action.hashed.hash,
       updated_joke: joke,
     },
-  })
+  });
+
   console.log(
     `NEW ACTION HASH: ${encodeHashToBase64(updateRecord.signed_action.hashed.hash)}`
   )
 
-  dispatch('joke-updated', {
-    actionHash: updateRecord.signed_action.hashed.hash,
-  })
+  dispatch("joke-updated", { actionHash: updateRecord.signed_action.hashed.hash });
 } catch (e) {
-  errorSnackbar.labelText = `Error updating the joke: ${e}`
-  errorSnackbar.show()
+  alert((e as HolochainError).message);
 }
 ```
 
@@ -231,14 +228,16 @@ pub struct UpdateJokeInput {
 #[hdk_extern]
 pub fn update_joke(input: UpdateJokeInput) -> ExternResult<Record> {
     let updated_joke_hash = update_entry(input.previous_joke_hash.clone(), &input.updated_joke)?;
-    let record = get(updated_joke_hash.clone(), GetOptions::default())?.ok_or(
-        wasm_error!(WasmErrorInner::Guest(String::from("Could not find the newly updated Joke")))
-    )?;
+    let record = get(updated_joke_hash.clone(), GetOptions::default())?.ok_or(wasm_error!(
+        WasmErrorInner::Guest("Could not find the newly updated Joke".to_string())
+    ))?;
     Ok(record)
 }
 ```
 
-Notice how this block of code contains a struct as well as the Zome function. For this update function, we want to send multiple bits of data from the client, but Zome functions can only a take a single parameter. Using a struct type allows us to circumvent this.
+Notice how this block of code contains a struct as well as the Zome function. For this update function, we want to send multiple pieces of data from the client, but Zome functions can only a take a single parameter. Using a struct type allows us to circumvent this.
+
+TODO: reword
 
 [hdk::entry_update_entry](https://docs.rs/hdk/latest/hdk/entry/fn.update_entry.html)
 
@@ -264,7 +263,7 @@ What do you think will happen if you edit two separate entries to have the same 
 
 #### 2. Save the file, navigate to `dnas/jokes/zomes/coordinator/jokes/src/joke.rs` and write a zome function to delete a joke
 
-Try figure it out yourself!
+Try figure it out yourself using the docs for delete_entry
 
 <details>
 <summary>
@@ -359,3 +358,4 @@ Update the fetchJoke function in `JokeDetails.svelte`
 Try creating, updating and deleting various jokes and seeing how the liveness changes
 
 Well done! You made it to the end.
+

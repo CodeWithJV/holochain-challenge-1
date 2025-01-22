@@ -1,5 +1,5 @@
 <script lang="ts">
-  import logo from './../logo.svg'
+  import logo from './assets/holochainLogo.svg'
 
   export let challengeNumber: number = 0
   export let challengeName: string = ''

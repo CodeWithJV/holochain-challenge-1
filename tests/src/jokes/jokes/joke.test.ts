@@ -1,30 +1,30 @@
 import { assert, test } from "vitest";
 
-import { runScenario, dhtSync, CallableCell } from '@holochain/tryorama';
 import {
-  NewEntryAction,
   ActionHash,
-  Record,
-  Link,
+  AppBundleSource,
   CreateLink,
   DeleteLink,
-  SignedActionHashed,
-  AppBundleSource,
   fakeActionHash,
   fakeAgentPubKey,
-  fakeEntryHash
-} from '@holochain/client';
-import { decode } from '@msgpack/msgpack';
+  fakeEntryHash,
+  Link,
+  NewEntryAction,
+  Record,
+  SignedActionHashed,
+} from "@holochain/client";
+import { CallableCell, dhtSync, runScenario } from "@holochain/tryorama";
+import { decode } from "@msgpack/msgpack";
 
-import { createJoke, sampleJoke } from './common.js';
+import { createJoke, sampleJoke } from "./common.js";
 
-test('create Joke', async () => {
+test("create Joke", async () => {
   await runScenario(async scenario => {
     // Construct proper paths for your app.
     // This assumes app bundle created by the `hc app pack` command.
-    const testAppPath = process.cwd() + '/../workdir/demo.happ';
+    const testAppPath = process.cwd() + "/../workdir/actions_and_entries.happ";
 
-    // Set up the app to be installed 
+    // Set up the app to be installed
     const appSource = { appBundleSource: { path: testAppPath } };
 
     // Add 2 players with the test app to the Scenario. The returned players
@@ -41,13 +41,13 @@ test('create Joke', async () => {
   });
 });
 
-test('create and read Joke', async () => {
+test("create and read Joke", async () => {
   await runScenario(async scenario => {
     // Construct proper paths for your app.
     // This assumes app bundle created by the `hc app pack` command.
-    const testAppPath = process.cwd() + '/../workdir/demo.happ';
+    const testAppPath = process.cwd() + "/../workdir/actions_and_entries.happ";
 
-    // Set up the app to be installed 
+    // Set up the app to be installed
     const appSource = { appBundleSource: { path: testAppPath } };
 
     // Add 2 players with the test app to the Scenario. The returned players
@@ -79,20 +79,20 @@ test('create and read Joke', async () => {
     let linksToCreators: Link[] = await bob.cells[0].callZome({
       zome_name: "jokes",
       fn_name: "get_jokes_for_creator",
-      payload: sample.creator
+      payload: sample.creator,
     });
     assert.equal(linksToCreators.length, 1);
     assert.deepEqual(linksToCreators[0].target, record.signed_action.hashed.hash);
   });
 });
 
-test('create and update Joke', async () => {
+test("create and update Joke", async () => {
   await runScenario(async scenario => {
     // Construct proper paths for your app.
     // This assumes app bundle created by the `hc app pack` command.
-    const testAppPath = process.cwd() + '/../workdir/demo.happ';
+    const testAppPath = process.cwd() + "/../workdir/actions_and_entries.happ";
 
-    // Set up the app to be installed 
+    // Set up the app to be installed
     const appSource = { appBundleSource: { path: testAppPath } };
 
     // Add 2 players with the test app to the Scenario. The returned players
@@ -106,9 +106,9 @@ test('create and update Joke', async () => {
     // Alice creates a Joke
     const record: Record = await createJoke(alice.cells[0]);
     assert.ok(record);
-        
+
     const originalActionHash = record.signed_action.hashed.hash;
- 
+
     // Alice updates the Joke
     let contentUpdate: any = await sampleJoke(alice.cells[0]);
     let updateInput = {
@@ -126,7 +126,7 @@ test('create and update Joke', async () => {
 
     // Wait for the updated entry to be propagated to the other node.
     await dhtSync([alice, bob], alice.cells[0].cell_id[0]);
-        
+
     // Bob gets the updated Joke
     const readUpdatedOutput0: Record = await bob.cells[0].callZome({
       zome_name: "jokes",
@@ -137,7 +137,7 @@ test('create and update Joke', async () => {
 
     // Alice updates the Joke again
     contentUpdate = await sampleJoke(alice.cells[0]);
-    updateInput = { 
+    updateInput = {
       original_joke_hash: originalActionHash,
       previous_joke_hash: updatedRecord.signed_action.hashed.hash,
       updated_joke: contentUpdate,
@@ -152,7 +152,7 @@ test('create and update Joke', async () => {
 
     // Wait for the updated entry to be propagated to the other node.
     await dhtSync([alice, bob], alice.cells[0].cell_id[0]);
-        
+
     // Bob gets the updated Joke
     const readUpdatedOutput1: Record = await bob.cells[0].callZome({
       zome_name: "jokes",
@@ -172,13 +172,13 @@ test('create and update Joke', async () => {
   });
 });
 
-test('create and delete Joke', async () => {
+test("create and delete Joke", async () => {
   await runScenario(async scenario => {
     // Construct proper paths for your app.
     // This assumes app bundle created by the `hc app pack` command.
-    const testAppPath = process.cwd() + '/../workdir/demo.happ';
+    const testAppPath = process.cwd() + "/../workdir/actions_and_entries.happ";
 
-    // Set up the app to be installed 
+    // Set up the app to be installed
     const appSource = { appBundleSource: { path: testAppPath } };
 
     // Add 2 players with the test app to the Scenario. The returned players
@@ -201,7 +201,7 @@ test('create and delete Joke', async () => {
     let linksToCreators: Link[] = await bob.cells[0].callZome({
       zome_name: "jokes",
       fn_name: "get_jokes_for_creator",
-      payload: sample.creator
+      payload: sample.creator,
     });
     assert.equal(linksToCreators.length, 1);
     assert.deepEqual(linksToCreators[0].target, record.signed_action.hashed.hash);
@@ -216,7 +216,7 @@ test('create and delete Joke', async () => {
 
     // Wait for the entry deletion to be propagated to the other node.
     await dhtSync([alice, bob], alice.cells[0].cell_id[0]);
-        
+
     // Bob gets the oldest delete for the Joke
     const oldestDeleteForJoke: SignedActionHashed = await bob.cells[0].callZome({
       zome_name: "jokes",
@@ -224,7 +224,7 @@ test('create and delete Joke', async () => {
       payload: record.signed_action.hashed.hash,
     });
     assert.ok(oldestDeleteForJoke);
-        
+
     // Bob gets the deletions for the Joke
     const deletesForJoke: SignedActionHashed[] = await bob.cells[0].callZome({
       zome_name: "jokes",
@@ -237,17 +237,17 @@ test('create and delete Joke', async () => {
     linksToCreators = await bob.cells[0].callZome({
       zome_name: "jokes",
       fn_name: "get_jokes_for_creator",
-      payload: sample.creator
+      payload: sample.creator,
     });
     assert.equal(linksToCreators.length, 0);
 
-    // Bob gets the deleted Creators for the Joke 
-    const deletedLinksToCreators: Array<[SignedActionHashed<CreateLink>, SignedActionHashed<DeleteLink>[]]> = await bob.cells[0].callZome({
-      zome_name: "jokes",
-      fn_name: "get_deleted_jokes_for_creator",
-      payload: sample.creator
-    });
+    // Bob gets the deleted Creators for the Joke
+    const deletedLinksToCreators: Array<[SignedActionHashed<CreateLink>, SignedActionHashed<DeleteLink>[]]> = await bob
+      .cells[0].callZome({
+        zome_name: "jokes",
+        fn_name: "get_deleted_jokes_for_creator",
+        payload: sample.creator,
+      });
     assert.equal(deletedLinksToCreators.length, 1);
-
   });
 });

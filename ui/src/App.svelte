@@ -1,60 +1,97 @@
 <script lang="ts">
-  import { onMount, setContext } from 'svelte'
-  import type { ActionHash, AppClient } from '@holochain/client'
-  import { AppWebsocket, decodeHashFromBase64 } from '@holochain/client'
-  import '@material/mwc-circular-progress'
-  import '@material/mwc-textfield'
+import type { ActionHash, AppClient, HolochainError } from "@holochain/client";
+import { AppWebsocket, decodeHashFromBase64  } from "@holochain/client";
+import { onMount, setContext } from "svelte";
 
-  import { clientContext } from './contexts'
+import logo from "./assets/holochainLogo.svg";
+import { type ClientContext, clientContext } from "./contexts";
 
-  import CreateJoke from './jokes/jokes/CreateJoke.svelte'
-  import Banner from './Banner.svelte'
+import CreateJoke from './jokes/jokes/CreateJoke.svelte'
+import Banner from './Banner.svelte'
 
-  // Import the JokeDetail component here
-  // ...
+// Import the JokeDetail component here
+// ...
+import JokeDetail from './jokes/jokes/JokeDetail.svelte'
 
-  let client: AppClient | undefined
+let client: AppClient | undefined;
+let error: HolochainError | undefined;
+let loading = false;
 
-  let loading = true
+// Paste your variable and state declarations here
+// ...
+let jokeHash = ''
+let retrieveJokeHash = ''
+$: jokeHash
 
-  // Paste your variable and state declarations here
-  // ...
+const appClientContext = {
+  getClient: async () => {
+    if (!client) {
+      client = await AppWebsocket.connect();
+    }
+    return client;
+  },
+};
 
-  onMount(async () => {
-    // We pass an unused string as the url because it will dynamically be replaced in launcher environments
-    client = await AppWebsocket.connect()
+onMount(async () => {
+  try {
+    loading = true;
+    client = await appClientContext.getClient();
+  } catch (e) {
+  console.log(e)
+    error = e as HolochainError;
+  } finally {
+    loading = false;
+  }
+});
 
-    loading = false
-  })
-
-  setContext(clientContext, {
-    getClient: () => client,
-  })
+setContext<ClientContext>(clientContext, appClientContext);
 </script>
 
 <Banner challengeName={'Entries and Actions'} challengeNumber={1}>
   <div
     style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; margin-left: auto; margin-right: auto; max-width: 600px;"
   >
-    {#if loading}
+    {#if loading || !client}
       <div
         style="display: flex; flex: 1; align-items: center; justify-content: center"
       >
-        <mwc-circular-progress indeterminate />
+        Loading
       </div>
     {:else}
       <div
         id="content"
         style="display: flex; flex-direction: column; flex: 1; margin-bottom: 15%;"
       >
-        <br />
-        <br />
-        <br />
         <!-- Place your other code here -->
         <CreateJoke creator={client?.myPubKey} />
-        <br />
+<h3 style="margin-bottom: 16px; margin-top: 32px;">Retrieve A Joke!</h3>
+<input
+    type="text"
+    placeholder="Enter the action hash of a joke..."
+    value={jokeHash}
+    on:input={(e) => {
+    jokeHash = e.currentTarget.value
+    }}
+    required
+    style="margin-bottom: 16px;"
+/>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<button
+    on:click={() => {
+      retrieveJokeHash = undefined //force reload of joke detail component
+      retrieveJokeHash = jokeHash
+    }}
+>
+    Get Joke
+</button>
+{#if retrieveJokeHash}
+    <JokeDetail jokeHash={decodeHashFromBase64(retrieveJokeHash)} />
+{/if}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
       </div>
     {/if}
   </div>
 </Banner>
+
+<style>
+</style>
