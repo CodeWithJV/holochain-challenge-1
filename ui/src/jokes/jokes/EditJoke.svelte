@@ -30,8 +30,33 @@ onMount(async () => {
 });
 
 async function updateJoke() {
-    // Implement Joke update/edit logic here
-    // ...
+  // Implement Joke update/edit logic here
+  const joke: Joke = {
+    text: text!,
+    creator: currentJoke.creator,
+  };
+
+  try {
+    const updateRecord: Record = await client.callZome({
+      cap_secret: null,
+      role_name: "jokes",
+      zome_name: "jokes",
+      fn_name: "update_joke",
+      payload: {
+        original_joke_hash: originalJokeHash,
+        previous_joke_hash: currentRecord.signed_action.hashed.hash,
+        updated_joke: joke,
+      },
+    });
+
+    console.log(
+      `NEW ACTION HASH: ${encodeHashToBase64(updateRecord.signed_action.hashed.hash)}`
+    )
+
+    dispatch("joke-updated", { actionHash: updateRecord.signed_action.hashed.hash });
+  } catch (e) {
+    alert((e as HolochainError).message);
+  }
 }
 </script>
 
