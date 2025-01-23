@@ -33,23 +33,42 @@ $: if (client && jokeHash) {
 }
 
 async function fetchJoke() {
-  loading = true;
+  loading = true
+
   try {
-    record = await client.callZome({
+    let details = await client.callZome({
       cap_secret: null,
-      role_name: "jokes",
-      zome_name: "jokes",
-      fn_name: "get_joke_by_hash",
+      role_name: 'jokes',
+      zome_name: 'jokes',
+      fn_name: 'get_joke_by_hash',
       payload: jokeHash,
-    });
-    if (record) {
-      joke = decode((record.entry as any).Present.entry) as Joke;
+    })
+    if (details) {
+      if (details.type === 'Record') {
+        record = details.content.record
+        let entry_hash = record.signed_action.hashed.content.entry_hash
+        let entry_details = await client.callZome({
+          cap_secret: null,
+          role_name: 'jokes',
+          zome_name: 'jokes',
+          fn_name: 'get_joke_by_hash',
+          payload: entry_hash,
+        })
+        console.log('ACTION HASH:', encodeHashToBase64(jokeHash))
+        console.log('ENTRY HASH: ', encodeHashToBase64(entry_hash))
+        console.log('LIVENESS:', entry_details.content.entry_dht_status)
+        joke = decode((record.entry as any).Present.entry) as Joke
+      } else {
+        joke = undefined
+        console.log('entry found')
+        console.log(details)
+      }
     }
   } catch (e) {
-    error = e as HolochainError;
-  } finally {
-    loading = false;
+    error = e
   }
+
+  loading = false
 }
 
 async function deleteJoke() {
