@@ -64,12 +64,13 @@ pub fn create_joke(joke: Joke) -> ExternResult<Record> {
 }
 
 ```
-[hdk::entry::create_entry](https://docs.rs/hdk/latest/hdk/entry/fn.create_entry.html)
-[hdk::entry::get](https://docs.rs/hdk/latest/hdk/entry/fn.get.html)
+Useful api docs
+* [hdk::entry::create_entry](https://docs.rs/hdk/latest/hdk/entry/fn.create_entry.html)
+* [hdk::entry::get](https://docs.rs/hdk/latest/hdk/entry/fn.get.html)
 
 ### 4. Save the file, restart the holochain application and create another joke.
 
-If you look back at the playground, this time you should see a new entry has been created in the DHT.
+The error should have gone away.
 
 <details>
 <summary>
@@ -120,7 +121,7 @@ $: jokeHash
 
 #### 3. Save `App.svelte`, and head back into one of the agent windows. You should see the text field displayed
 
-Notice how we didn't need to completely restart the app this time? You only need to restart your app when you change rust code, the front end will use hot reloading to stayu up to date.
+Notice how we didn't need to completely restart the app this time? You only need to restart your app when you change rust code, the front end will use hot reloading to stay up to date.
 
 #### 4. We are going to need to add a button which triggers the retrieval of a joke from the DHT, and then displays it for the user. To do this, we will use the UI component `JokeDetail`, as well as another piece of state to manage its visibility.
 
@@ -134,7 +135,7 @@ import JokeDetail from './jokes/jokes/JokeDetail.svelte'
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <button
     on:click={() => {
-      retrieveJokeHash = undefined //force reload of joke detail component
+      retrieveJokeHash = '' //force reload even if jokeHash is the same
       retrieveJokeHash = jokeHash
     }}
 >
@@ -169,9 +170,13 @@ This zome function is called by the `JokeDetail` component when it mounts. It ta
 
 #### 6. Save the file, restart the holochain app and create a new joke inside an Agent's window.
 
-Inside that same agents window, open up the console, copy the hash of the action just created, paste it into the other Agents Get Joke text field, and press the **Get Joke** button.
+In the holochain playground, find the action for the joke just created by clicking on the Create action at the top of the agent's source tree. You should see the Action contents show up in the Entry Contents window. Click on the circle next to `Action Contents, with hash` to copy the hash of the action.
 
-You should see your newely created joke render on the UI!
+We've also put a console.log of the action hash, so you can easily grab it from the browser console.
+
+Paste the action hash into the other Agents Get Joke text field, and press the **Get Joke** button.
+
+You should see your newly created joke render on the UI!
 
 ## Edit a joke
 
@@ -240,9 +245,7 @@ pub fn update_joke(input: UpdateJokeInput) -> ExternResult<Record> {
 }
 ```
 
-Notice how this block of code contains a struct as well as the Zome function. For this update function, we want to send multiple pieces of data from the client, but Zome functions can only a take a single parameter. Using a struct type allows us to circumvent this.
-
-TODO: reword
+Notice how this block of code contains a struct as well as the Zome function. For this update function, we want to send multiple pieces of data from the client, but Zome functions can only a take a single parameter. 
 
 [hdk::entry_update_entry](https://docs.rs/hdk/latest/hdk/entry/fn.update_entry.html)
 

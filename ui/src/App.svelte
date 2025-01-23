@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { ActionHash, AppClient, HolochainError } from "@holochain/client";
-import { AppWebsocket, decodeHashFromBase64  } from "@holochain/client";
+import { AppWebsocket, decodeHashFromBase64, encodeHashToBase64  } from "@holochain/client";
 import { onMount, setContext } from "svelte";
 
 import logo from "./assets/holochainLogo.svg";
@@ -10,14 +10,12 @@ import CreateJoke from './jokes/jokes/CreateJoke.svelte'
 import Banner from './Banner.svelte'
 
 // Import the JokeDetail component here
-// ...
 
 let client: AppClient | undefined;
 let error: HolochainError | undefined;
 let loading = false;
 
 // Paste your variable and state declarations here
-// ...
 
 const appClientContext = {
   getClient: async () => {
@@ -61,6 +59,7 @@ setContext<ClientContext>(clientContext, appClientContext);
         <CreateJoke creator={client?.myPubKey} />
         <!-- Place your other code here -->
         <!-- svelte-ignore a11y-click-events-have-key-events -->
+
       </div>
     {/if}
   </div>

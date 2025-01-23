@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { ActionHash, AgentPubKey, AppClient, DnaHash, EntryHash, HolochainError, Record } from "@holochain/client";
+import {encodeHashToBase64} from "@holochain/client";
 import { createEventDispatcher, getContext, onMount } from "svelte";
 import { type ClientContext, clientContext } from "../../contexts";
 import type { Joke } from "./types";
@@ -36,7 +37,7 @@ async function createJoke() {
       fn_name: "create_joke",
       payload: jokeEntry,
     });
-    console.log(record)
+    console.log(encodeHashToBase64(record.signed_action.hashed.hash))
     dispatch("joke-created", { jokeHash: record.signed_action.hashed.hash });
   } catch (e) {
     console.error(e)

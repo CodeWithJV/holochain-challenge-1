@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { ActionHash, AgentPubKey, AppClient, DnaHash, EntryHash, HolochainError, Record } from "@holochain/client";
+import {encodeHashToBase64} from "@holochain/client";
 import { decode } from "@msgpack/msgpack";
 import { createEventDispatcher, getContext, onMount } from "svelte";
 import { type ClientContext, clientContext } from "../../contexts";
@@ -25,8 +26,11 @@ onMount(async () => {
     throw new Error(`The jokeHash input is required for the JokeDetail element`);
   }
   client = await appClientContext.getClient();
-  await fetchJoke();
 });
+
+$: if (client && jokeHash) {
+  fetchJoke();
+}
 
 async function fetchJoke() {
   loading = true;
